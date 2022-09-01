@@ -13,7 +13,7 @@ class BookApplicationTests {
 
 	@Test
 	void saleBook() {
-		saleService.saleBook("111111", 2, "Yuriy");
+		saleService.saleBook("111111", 1, "Yurii");
 	}
 
 }

@@ -4,7 +4,6 @@ import com.example.book.entity.Book;
 import com.example.book.entity.Customer;
 import com.example.book.repository.BookRepository;
 import com.example.book.repository.CustomerRepository;
-import com.example.book.repository.SalesRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +22,7 @@ public class BookApplication {
 		SpringApplication.run(BookApplication.class, args);
 	}
 
-//	@Bean
+	@Bean
 	public CommandLineRunner initBD(BookRepository bookRepository, CustomerRepository customerRepository) {
 		return (args) -> {
 			log.info("initBD");

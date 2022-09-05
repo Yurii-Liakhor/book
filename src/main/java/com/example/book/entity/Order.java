@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -20,6 +21,10 @@ public class Order {
     private LocalDateTime saleDate;
     @Column(nullable = false)
     private String userName;
+
+    @Column(nullable = false)
+    @OneToMany(mappedBy = "order")
+    private List<Item> items;
 
     @Column(nullable = false, updatable = false)
     private String order;

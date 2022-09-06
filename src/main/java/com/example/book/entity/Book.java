@@ -34,6 +34,14 @@ public class Book {
         this.count = count;
     }
 
+    public void incrementBooks(int count) {
+        this.count = this.count + count;
+    }
+
+    public void decrementBooks(int count) {
+        this.count = this.count - count;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

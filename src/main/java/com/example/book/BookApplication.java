@@ -4,7 +4,9 @@ import com.example.book.entity.Book;
 import com.example.book.entity.Customer;
 import com.example.book.repository.BookRepository;
 import com.example.book.repository.CustomerRepository;
+import com.example.book.service.SaleService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,6 +24,9 @@ public class BookApplication {
 		SpringApplication.run(BookApplication.class, args);
 	}
 
+	@Autowired
+	private SaleService saleService;
+
 	@Bean
 	public CommandLineRunner initBD(BookRepository bookRepository, CustomerRepository customerRepository) {
 		return (args) -> {
@@ -37,6 +42,9 @@ public class BookApplication {
 					Customer.builder().userName("Yurii").build()
 			);
 			customerRepository.saveAll(customers);
+
+			saleService.saleBook("111111", 2, "Yurii");
+//			saleService.refundBook("8335b196-b3ed-478d-9e9a-66f8e7a2d65b", "Yurii");
 		};
 	}
 }

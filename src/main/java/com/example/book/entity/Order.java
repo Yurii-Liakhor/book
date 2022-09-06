@@ -1,9 +1,11 @@
 package com.example.book.entity;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,40 +24,36 @@ public class Order {
     private LocalDateTime saleDate;
     @Column(nullable = false)
     private String userName;
-
-    @Column(nullable = false)
-    @OneToMany(mappedBy = "order")
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Item> items;
-
     @Column(nullable = false, updatable = false)
-    private String order;
-    @Column(nullable = false)
-    private Integer count;
+    private String orderCode;
 
-    public Order(LocalDateTime saleDate, String userName, Integer count) {
-        this.order = UUID.randomUUID().toString();
+    public Order(LocalDateTime saleDate, String userName) {
+        this.orderCode = UUID.randomUUID().toString();
         this.saleDate = saleDate;
         this.userName = userName;
-        this.count = count;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Order)) return false;
-
-        Order order = (Order) o;
+        if (!(o instanceof Order order)) return false;
 
         if (!getSaleDate().equals(order.getSaleDate())) return false;
         if (!getUserName().equals(order.getUserName())) return false;
-        return getOrder().equals(order.getOrder());
+        return getOrderCode().equals(order.getOrderCode());
     }
 
     @Override
     public int hashCode() {
         int result = getSaleDate().hashCode();
         result = 31 * result + getUserName().hashCode();
-        result = 31 * result + getOrder().hashCode();
+        result = 31 * result + getOrderCode().hashCode();
         return result;
     }
 }

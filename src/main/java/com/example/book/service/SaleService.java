@@ -1,7 +1,6 @@
 package com.example.book.service;
 
 import com.example.book.entity.Book;
-import com.example.book.entity.Customer;
 import com.example.book.entity.Item;
 import com.example.book.entity.Order;
 import com.example.book.model.ItemDto;
@@ -35,7 +34,8 @@ public class SaleService {
     }
 
     @Transactional
-    public void saleBook(String vendorCode, int bookCount, String userName) {
+    public String saleBook(String vendorCode, int bookCount, String userName) {
+        log.info("saleBook");
         Book book = bookRepository.getBookByVendorCode(vendorCode).orElseThrow(() -> {
             return new NullPointerException("Book by vendor code: " + vendorCode + ", not found.");
         });
@@ -61,10 +61,12 @@ public class SaleService {
         item.setOrder(order);
         itemRepository.save(item);
         orderRepository.save(order);
+        return order.getOrderCode();
     }
 
     @Transactional
-    public void saleBooks(List<ItemDto> itemsDto, String userName) {
+    public String saleBooks(List<ItemDto> itemsDto, String userName) {
+        log.info("saleBooks");
         if(!customerRepository.existsByUserName(userName)) {
             throw new NullPointerException("Customer by user name: " + userName + ", not found.");
         }
@@ -86,7 +88,7 @@ public class SaleService {
             bookRepository.save(book);
             items.add(Item.builder()
                             .vendorCode(book.getVendorCode())
-                            .count(book.getCount())
+                            .count(itemDto.getCount())
                             .price(book.getPrice())
                             .order(order)
                             .build());
@@ -94,18 +96,12 @@ public class SaleService {
         order.setItems(items);
         itemRepository.saveAll(items);
         orderRepository.save(order);
-
-//        List<Item> items = new ArrayList<>();
-//        books.forEach(book -> {
-//            items.add(Item.builder()
-//                            .vendorCode(book.getVendorCode())
-//                            .count(bo)
-//                            .build());
-//        });
+        return order.getOrderCode();
     }
 
     @Transactional
     public void refundBook(String orderCode, String userName) {
+        log.info("refundBook");
         if(!customerRepository.existsByUserName(userName)) {
             throw new NullPointerException("Customer by user name: " + userName + ", was not found.");
         }

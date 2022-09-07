@@ -1,11 +1,9 @@
 package com.example.book.entity;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +30,7 @@ public class Order {
     private List<Item> items;
     @Column(nullable = false, updatable = false)
     private String orderCode;
+//    private Long orderCode;
 
     public Order(LocalDateTime saleDate, String userName) {
         this.orderCode = UUID.randomUUID().toString();

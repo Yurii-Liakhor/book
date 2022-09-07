@@ -1,9 +1,9 @@
 package com.example.book.entity;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -24,14 +24,18 @@ public class Book {
     private String author;
     @Column(nullable = false)
     private LocalDate year;
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer count;
+    @Column(nullable = false)
+    private BigDecimal price;
 
-    public Book(String name, String author, LocalDate year, Integer count) {
+    public Book(String vendorCode, String name, String author, LocalDate year, Integer count, BigDecimal price) {
+        this.vendorCode = vendorCode;
         this.name = name;
         this.author = author;
         this.year = year;
         this.count = count;
+        this.price = price;
     }
 
     public void incrementBooks(int count) {
@@ -50,7 +54,9 @@ public class Book {
         if (!getVendorCode().equals(book.getVendorCode())) return false;
         if (!getName().equals(book.getName())) return false;
         if (!getAuthor().equals(book.getAuthor())) return false;
-        return getYear().equals(book.getYear());
+        if (!getYear().equals(book.getYear())) return false;
+        if (!getCount().equals(book.getCount())) return false;
+        return getPrice().equals(book.getPrice());
     }
 
     @Override
@@ -59,6 +65,8 @@ public class Book {
         result = 31 * result + getName().hashCode();
         result = 31 * result + getAuthor().hashCode();
         result = 31 * result + getYear().hashCode();
+        result = 31 * result + getCount().hashCode();
+        result = 31 * result + getPrice().hashCode();
         return result;
     }
 }

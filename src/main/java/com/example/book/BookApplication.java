@@ -2,6 +2,8 @@ package com.example.book;
 
 import com.example.book.entity.Book;
 import com.example.book.entity.Customer;
+import com.example.book.entity.Item;
+import com.example.book.model.ItemDto;
 import com.example.book.repository.BookRepository;
 import com.example.book.repository.CustomerRepository;
 import com.example.book.service.SaleService;
@@ -12,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,21 +33,33 @@ public class BookApplication {
 	@Bean
 	public CommandLineRunner initBD(BookRepository bookRepository, CustomerRepository customerRepository) {
 		return (args) -> {
-			log.info("initBD");
+//			log.info("initBD");
+//
+//			List<Book> books = Arrays.asList(
+//					Book.builder().author("Dumbledore").count(10).name("book1").vendorCode("111111").price(BigDecimal.valueOf(100)).year(LocalDate.ofYearDay(2022, 1)).build(),
+//					Book.builder().author("Bilbo").count(5).name("Roman").vendorCode("222222").price(BigDecimal.valueOf(250)).year(LocalDate.ofYearDay(22, 1)).build()
+//			);
+//			bookRepository.saveAll(books);
+//
+//			List<Customer> customers = Collections.singletonList(
+//					Customer.builder().userName("Yurii").build()
+//			);
+//			customerRepository.saveAll(customers);
+//
+//			saleService.saleBook("111111", 2, "Yurii");
+//			saleService.refundBook("cd91ef5a-44c3-4db1-9569-39a32a31a78d", "Yurii");
 
-			List<Book> books = Arrays.asList(
-					Book.builder().author("Dumbledore").count(10).name("book1").vendorCode("111111").year(LocalDate.ofYearDay(2022, 1)).build(),
-					Book.builder().author("Bilbo").count(5).name("Roman").vendorCode("222222").year(LocalDate.ofYearDay(22, 1)).build()
+			List<ItemDto> itemsDto = List.of(
+					ItemDto.builder()
+							.count(3)
+							.vendorCode("111111")
+							.build(),
+					ItemDto.builder()
+							.count(2)
+							.vendorCode("222222")
+							.build()
 			);
-			bookRepository.saveAll(books);
-
-			List<Customer> customers = Collections.singletonList(
-					Customer.builder().userName("Yurii").build()
-			);
-			customerRepository.saveAll(customers);
-
-			saleService.saleBook("111111", 2, "Yurii");
-//			saleService.refundBook("8335b196-b3ed-478d-9e9a-66f8e7a2d65b", "Yurii");
+			saleService.saleBooks(itemsDto, "Yurii");
 		};
 	}
 }

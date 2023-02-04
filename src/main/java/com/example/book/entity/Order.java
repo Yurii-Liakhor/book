@@ -30,7 +30,6 @@ public class Order {
     private List<Item> items;
     @Column(nullable = false, updatable = false)
     private String orderCode;
-//    private Long orderCode;
 
     public Order(LocalDateTime saleDate, String userName) {
         this.orderCode = UUID.randomUUID().toString();

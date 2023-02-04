@@ -16,7 +16,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String vendorCode;
     @Column(nullable = false)
     private String name;

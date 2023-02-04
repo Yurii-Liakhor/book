@@ -11,6 +11,8 @@ import com.example.book.repository.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -33,12 +35,11 @@ public class SaleService {
         this.itemRepository = itemRepository;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public String saleBook(String vendorCode, int bookCount, String userName) {
         log.info("saleBook");
-        Book book = bookRepository.getBookByVendorCode(vendorCode).orElseThrow(() -> {
-            return new NullPointerException("Book by vendor code: " + vendorCode + ", not found.");
-        });
+        Book book = bookRepository.getBookByVendorCode(vendorCode).orElseThrow(() ->
+                new NullPointerException("Book by vendor code: " + vendorCode + ", not found."));
         if(book.getCount() < bookCount) {
             throw new IllegalArgumentException("Not enough books.");
         }
@@ -64,7 +65,7 @@ public class SaleService {
         return order.getOrderCode();
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public String saleBooks(List<ItemDto> itemsDto, String userName) {
         log.info("saleBooks");
         if(!customerRepository.existsByUserName(userName)) {
@@ -99,20 +100,18 @@ public class SaleService {
         return order.getOrderCode();
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void refundBook(String orderCode, String userName) {
         log.info("refundBook");
         if(!customerRepository.existsByUserName(userName)) {
             throw new NullPointerException("Customer by user name: " + userName + ", was not found.");
         }
-        Order order = orderRepository.getSaleByOrderCodeAndUserName(orderCode, userName).orElseThrow(() -> {
-            return new NullPointerException("Sale not found.");
-        });
+        Order order = orderRepository.getOrderByOrderCodeAndUserName(orderCode, userName).orElseThrow(() ->
+                new NullPointerException("Order: " + orderCode + " not found."));
         List<Item> items = order.getItems();
         items.forEach(item -> {
-            Book book = bookRepository.getBookByVendorCode(item.getVendorCode()).orElseThrow(() -> {
-                return new NullPointerException("Book not found.");
-            });
+            Book book = bookRepository.getBookByVendorCode(item.getVendorCode()).orElseThrow(() ->
+                    new NullPointerException("Book: " + item.getVendorCode() + " not found."));
             book.incrementBooks(item.getCount());
         });
         orderRepository.delete(order);
